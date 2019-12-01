@@ -1,6 +1,10 @@
+import java.util.ArrayList;
 import java.util.Stack;
 
 public class DMF {
+	ArrayList<Integer> primes  = new ArrayList<Integer>(); 
+	Boolean[] b = new Boolean[(int)10e6+1] ;
+
 	//Overflows 
 	public long fastExpN1(long a, long b, long m) {
 		long c = 1;
@@ -70,10 +74,29 @@ public class DMF {
 		}
 		System.out.println(d + " = ("+ aTemp+"*"+s2+") + (" + bTemp+"*"+t2+")");
 	}
+	public void Seive (int n) {
+		if (n<=1||n>(int)(10e6))return ;
+		for(int i=2 ;i<=n ;i++)b[i] = false; 
+		for(int i=2 ; i*i<=n; i++) {
+			if(!b[i]) {
+				for(int j=i*i ; j<=n ;j+=i) {
+					b[j] = true;
+				}
+			primes.add(i);
+			}
+		}
+	}
+	public void primeNumberGen() {
+		if(primes.size()==0)Seive((int)10e6);
+		int random = (int)Math.round((primes.size())*Math.random());
+		System.out.println("Your Random number is "+primes.get(random));
+		
+	}
 	public static void main(String[] args) {
 		DMF e = new DMF();
-		//System.out.println(e.EGCD(3185, 2753));
+		System.out.println(e.fastExpIte(3185, 2753, 3233));
 		e.EGCD(21, 44);
+		e.primeNumberGen();
 	}
 
 }
