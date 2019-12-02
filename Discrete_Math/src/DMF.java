@@ -142,7 +142,7 @@ public class DMF {
 		long[] add = CRTAdd(mods, A_B), mpy = CRTMultiply(mods, A_B);
 		long[] addAns = CRT(mods, add), mpyAns = CRT(mods, mpy);
 		System.out.println("C = A+B = " + A + " + " + B + " = " + addAns[0] + "(Mod " + addAns[1] + ")");
-		System.out.println("D = A*B = " + A + " + " + B + " = " + mpyAns[0] + "(Mod " + mpyAns[1] + ")");
+		System.out.println("D = A*B = " + A + " * " + B + " = " + mpyAns[0] + "(Mod " + mpyAns[1] + ")");
 		return new long[][] { addAns, mpyAns };
 
 	}
@@ -176,14 +176,17 @@ public class DMF {
 		System.out.println("Your Random number is " + e.primeNumberGen());
 
 		// Extended Euclidian Theorem
-		ans = e.EGCD(21, 44);
-		System.out.println(ans[0] + " = (" + 44 + "*" + ans[1] + ") + (" + 21 + "*" + ans[2] + ")");
+		int A = 8,B=35;
+		ans = e.EGCD(8, 35);
+		System.out.println(ans[0] + " = (" + Math.max(A, B) + "*" + ans[1] + ") + (" + Math.min(A, B) + "*" + ans[2] + ")");
 
 		// Chinese Reminder Theroem
 		long[] a = { 2, 1, 3 };
 		long[] mods =new long [] { 3, 4, 5 };
 		ans = e.CRT(mods, a);
 		System.out.println("Answer is " + ans[0] + " (mod " + ans[1] + ")");
+		
+		
 		mods =new long [] {99,98,97,95};
 		e.CRTOperation(mods , 123684,413456);
 	}
