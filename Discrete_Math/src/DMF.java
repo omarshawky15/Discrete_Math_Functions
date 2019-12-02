@@ -2,10 +2,11 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 public class DMF {
-	ArrayList<Integer> primes = new ArrayList<Integer>();
+	// Used by Seive 
+	ArrayList<Integer> primes = new ArrayList<Integer>(); 
 	Boolean[] b = new Boolean[(int) 10e6 + 1];
 
-	// Overflows
+	// Overflows 
 	public long fastExpN1(long a, long b, long m) {
 		long c = 1;
 		for (long i = 1; i <= b; i++) {
@@ -38,19 +39,19 @@ public class DMF {
 	public long fastExpRec(long a, long b, long m) {
 		if (b == 0)
 			return 1;
-		if (b % 2 == 1)
+		if (b % 2 == 1) // if b is odd 
 			return (a * fastExpRec((a * a) % m, (b - 1) / 2, m)) % m;
-		return fastExpRec((a * a) % m, b / 2, m) % m;
+		return fastExpRec((a * a) % m, b / 2, m) % m; // if b is even 
 	}
 
 	public long fastExpIte(long a, long b, long m) {
 		long ans = 1;
 		a %= m;
 		while (b > 0) {
-			if (b % 2 == 1) {
+			if (b % 2 == 1) { // if b is odd
 				ans = (ans * a) % m;
 				b--;
-			} else {
+			} else { // if b is even 
 				a *= a;
 				a %= m;
 				b /= 2;
@@ -64,18 +65,19 @@ public class DMF {
 		long aTemp = Math.max(a, b), bTemp = Math.min(b, a);
 		a = aTemp;
 		b = bTemp;
-		long s1 = 1, s2 = 0, t1 = 0, t2 = 1, temp = 0;
-		long q = a / b, r = a % b, d = r;
+		// Using the equation d = a * S2 + b * T2
+		long s1 = 1, s2 = 0, t1 = 0, t2 = 1, temp = 0; // S1,T1 are coefficents from previous equation - S2,T2 are current Coefficents for the equation
+		long q = a / b, r = a % b, d = r; // Beginining Value for q "quotient",r "reminder",d "GCD Value" 
 		a = b;
 		b = r;
 		while (r != 0) {
 			temp = s2;
-			s2 = s1 - s2 * q;
-			s1 = temp;
+			s2 = s1 - s2 * q; // calculting the new value for S2
+			s1 = temp; // S1 gains value of previous S2  
 			temp = t2;
-			t2 = t1 - t2 * q;
-			t1 = temp;
-			d = r;
+			t2 = t1 - t2 * q;// calculting the new value for T2
+			t1 = temp; // T1 gains value of previous T2  
+			d = r; 
 			r = a % b;
 			q = a / b;
 			a = b;
@@ -117,9 +119,9 @@ public class DMF {
 		}
 		for (int i = 0; i < sz; i++) {
 			long mi = mods[i];
-			ans[i][0] = a[i];
-			ans[i][1] = M / mi;
-			ans[i][2] = EGCD(ans[i][1] % mi, mi)[2];
+			ans[i][0] = a[i]; //ai
+			ans[i][1] = M / mi; // Mk
+			ans[i][2] = EGCD(ans[i][1] % mi, mi)[2]; // Yi = Mk^-1 (mod mi)
 			x += (ans[i][0] * ans[i][1] * ans[i][2]) % M;
 			x%=M;
 		}
@@ -136,17 +138,14 @@ public class DMF {
 			for (int i = 0; i < sz; i++) {
 				A_B[0][i] = A % mods[i];
 				A_B[1][i] = B % mods[i];
-				//System.out.println(A_B[0][i]);
-				//System.out.println(A_B[1][i]);
 			}
 		long[] add = CRTAdd(mods, A_B), mpy = CRTMultiply(mods, A_B);
 		long[] addAns = CRT(mods, add), mpyAns = CRT(mods, mpy);
-		System.out.println("C = A+B = " + A + " + " + B + " = " + addAns[0] + "(Mod " + addAns[1] + ")");
-		System.out.println("D = A*B = " + A + " * " + B + " = " + mpyAns[0] + "(Mod " + mpyAns[1] + ")");
+		System.out.println("\nC = A+B = " + A + " + " + B + " = " + addAns[0] + "(Mod " + addAns[1] + ")");
+		System.out.println("D = A*B = " + A + " * " + B + " = " + mpyAns[0] + "(Mod " + mpyAns[1] + ")\n");
 		return new long[][] { addAns, mpyAns };
 
 	}
-
 	private long[] CRTAdd(long[] mods, long[][] A_B) {
 		int sz = mods.length;
 		long[] ans = new long[sz];
@@ -167,26 +166,29 @@ public class DMF {
 		DMF e = new DMF();
 		long[] ans;
 		// Fast Expontiation (Iterative)
-		System.out.println(e.fastExpIte(3185, 2753, 3233) + " From Iterative");
+		System.out.println("2015^17 (% 3233) = "+e.fastExpIte(2015, 17, 3233) + " From Iterative");
 
 		// Fast Expontiation (Recursive)
-		System.out.println(e.fastExpRec(3185, 2753, 3233) + " From Recursive");
+		System.out.println("\n1114^17 (% 3233) = "+e.fastExpRec(1114, 17, 3233) + " From Recursive");
+		
+		// Fast Expontiation (Iterative)
+		System.out.println("\n0003^17 (% 3233) = "+e.fastExpIte(3, 17, 3233) + " From Iterative");
 
 		// Random Number Generation
-		System.out.println("Your Random number is " + e.primeNumberGen());
+		System.out.println("\nYour Random number is " + e.primeNumberGen());
 
 		// Extended Euclidian Theorem
-		int A = 8,B=35;
-		ans = e.EGCD(8, 35);
-		System.out.println(ans[0] + " = (" + Math.max(A, B) + "*" + ans[1] + ") + (" + Math.min(A, B) + "*" + ans[2] + ")");
+		int A = 252,B=356;
+		ans = e.EGCD(A, B);
+		System.out.println("\n"+ans[0] + " = (" + Math.max(A, B) + "*" + ans[1] + ") + (" + Math.min(A, B) + "*" + ans[2] + ")");
 
 		// Chinese Reminder Theroem
 		long[] a = { 2, 1, 3 };
 		long[] mods =new long [] { 3, 4, 5 };
 		ans = e.CRT(mods, a);
-		System.out.println("Answer is " + ans[0] + " (mod " + ans[1] + ")");
+		System.out.println("\nAnswer is " + ans[0] + " (mod " + ans[1] + ")");
 		
-		
+		//CRT to calculate A+B , A*B
 		mods =new long [] {99,98,97,95};
 		e.CRTOperation(mods , 123684,413456);
 	}
