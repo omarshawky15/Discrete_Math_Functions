@@ -108,48 +108,84 @@ public class DMF {
 		return primes.get(random);
 	}
 
-	public long[] CRT (long [][] par) {
-		long M =1 ,x=0;
-				int sz = par.length;
-		long [][] ans = new long[par.length][3];
-		for(int i =0 ;i<sz; i++) {
-			M*=par[i][1];
+	public long[] CRT(long[] mods,long[] a) {
+		long M = 1, x = 0;
+		int sz = a.length;
+		long[][] ans = new long[a.length][3];
+		for (int i = 0; i < sz; i++) {
+			M *= mods[i];
 		}
-		for(int i =0 ;i<sz; i++) {
-			long mi  = par[i][1];
-			ans[i][0]   = par[i][0];
-			ans[i][1] = M/par[i][1];
-			ans[i][2] = EGCD(ans[i][1]%mi, mi)[2];
-			x+= (ans[i][0]*ans[i][1]*ans[i][2])%M;
+		for (int i = 0; i < sz; i++) {
+			long mi = mods[i];
+			ans[i][0] = a[i];
+			ans[i][1] = M / mi;
+			ans[i][2] = EGCD(ans[i][1] % mi, mi)[2];
+			x += (ans[i][0] * ans[i][1] * ans[i][2]) % M;
+			x%=M;
 		}
-		while (x<0)x+=M;
-		//System.out.println("Answer is "+ x + " (mod "+M+")");
-		return new long[] {x,M};
-		
+		while (x < 0)
+			x += M;
+		// System.out.println("Answer is "+ x + " (mod "+M+")");
+		return new long[] { x%M, M };
+
+	}
+
+	public long[][] CRTOperation(long[] mods, long A, long B) {
+		int sz = mods.length;
+		long[][] A_B = new long[2][sz];
+			for (int i = 0; i < sz; i++) {
+				A_B[0][i] = A % mods[i];
+				A_B[1][i] = B % mods[i];
+				//System.out.println(A_B[0][i]);
+				//System.out.println(A_B[1][i]);
+			}
+		long[] add = CRTAdd(mods, A_B), mpy = CRTMultiply(mods, A_B);
+		long[] addAns = CRT(mods, add), mpyAns = CRT(mods, mpy);
+		System.out.println("C = A+B = " + A + " + " + B + " = " + addAns[0] + "(Mod " + addAns[1] + ")");
+		System.out.println("D = A*B = " + A + " + " + B + " = " + mpyAns[0] + "(Mod " + mpyAns[1] + ")");
+		return new long[][] { addAns, mpyAns };
+
+	}
+
+	private long[] CRTAdd(long[] mods, long[][] A_B) {
+		int sz = mods.length;
+		long[] ans = new long[sz];
+		for (int i = 0; i < sz; i++)
+			ans[i] = (A_B[0][i] + A_B[1][i]) % mods[i];
+		return ans;
+	}
+
+	private long[] CRTMultiply(long[] mods, long[][] A_B) {
+		int sz = mods.length;
+		long[] ans = new long[sz];
+		for (int i = 0; i < sz; i++)
+			ans[i] = (A_B[0][i] * A_B[1][i]) % mods[i];
+		return ans;
 	}
 
 	public static void main(String[] args) {
 		DMF e = new DMF();
-		long []ans;
-		//Fast Expontiation (Iterative)
-		System.out.println(e.fastExpIte(3185, 2753, 3233) + " From Iterative");	
-		
-		//Fast Expontiation (Recursive)
-		System.out.println(e.fastExpRec(3185, 2753, 3233) + " From Recursive");	
-		
-		//Random Number Generation
+		long[] ans;
+		// Fast Expontiation (Iterative)
+		System.out.println(e.fastExpIte(3185, 2753, 3233) + " From Iterative");
+
+		// Fast Expontiation (Recursive)
+		System.out.println(e.fastExpRec(3185, 2753, 3233) + " From Recursive");
+
+		// Random Number Generation
 		System.out.println("Your Random number is " + e.primeNumberGen());
-		
-		//Extended Euclidian Theorem 
+
+		// Extended Euclidian Theorem
 		ans = e.EGCD(21, 44);
 		System.out.println(ans[0] + " = (" + 44 + "*" + ans[1] + ") + (" + 21 + "*" + ans[2] + ")");
 
-		//Chinese Reminder Theroem
-		long [][] test = {{2 , 3},{1,4},{3,5}};
-		ans = e.CRT(test);
-		System.out.println("Answer is "+ ans[0] + " (mod "+ans[1]+")");
-
-		
+		// Chinese Reminder Theroem
+		long[] a = { 2, 1, 3 };
+		long[] mods =new long [] { 3, 4, 5 };
+		ans = e.CRT(mods, a);
+		System.out.println("Answer is " + ans[0] + " (mod " + ans[1] + ")");
+		mods =new long [] {99,98,97,95};
+		e.CRTOperation(mods , 123684,413456);
 	}
 
 }
