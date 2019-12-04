@@ -106,7 +106,6 @@ public class DMF {
 		if (primes.size() == 0)
 			Seive((int) 10e6);
 		int random = (int) Math.round((primes.size()) * Math.random());
-		// System.out.println("Your Random number is "+primes.get(random));
 		return primes.get(random);
 	}
 
@@ -127,7 +126,6 @@ public class DMF {
 		}
 		while (x < 0)
 			x += M;
-		// System.out.println("Answer is "+ x + " (mod "+M+")");
 		return new long[] { x%M, M };
 
 	}
